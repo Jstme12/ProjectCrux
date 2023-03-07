@@ -1,15 +1,29 @@
-import { useContext } from "react";
-import UserInfo from "../components/UserInfo";
-import AuthContext from "../context/AuthContext";
+import { useEffect, useState } from "react";
+import useAxios from "../utils/useAxios";
 
-const Home = () => {
-  const { user } = useContext(AuthContext);
+function ProtectedPage() {
+  const [res, setRes] = useState("");
+  const api = useAxios();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/test/");
+        setRes(response.data.response);
+      } catch {
+        setRes("Something went wrong");
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <section>
-      {user && <UserInfo user={user} />}
-      <h1>You are on home page!</h1>
-    </section>
+    <div>
+      <h1>Projected Page</h1>
+      <p>{res}</p>
+    </div>
   );
-};
+}
 
-export default Home;
+export default ProtectedPage;
